@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DAPLO AI — Roadmap Operacyjny</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0c10;
+    --surface: #13131c;
+    --surface2: #1c1c28;
+    --border: #2c2c3c;
+    --text: #e6e4f0;
+    --muted: #60607a;
+    --w1:  #ff7043;
+    --w2:  #ffb74d;
+    --w3:  #4dd0e1;
+    --w4:  #4fc3f7;
+    --w56: #81c784;
+    --w78: #ba68c8;
+    --w910:#f06292;
+    --red-task: #ff5252;
+    --milestone: #43a047;
+    --gold: #ffd54f;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+  }
+  body::after {
+    content:''; position:fixed; inset:0;
+    background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,.01) 2px,rgba(255,255,255,.01) 4px);
+    pointer-events:none; z-index:9999;
+  }
+  .page { max-width:1120px; margin:0 auto; padding:56px 28px 100px; }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 36px; margin-bottom: 52px;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 20px;
+  }
+  .brand { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+  h1 { font-family:'Syne',sans-serif; font-size:clamp(28px,5vw,52px); font-weight:800; letter-spacing:-.03em; line-height:1; }
+  h1 em { color:var(--gold); font-style:normal; }
+  .header-meta { text-align:right; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); line-height:2; }
+
+  .progress-section { display:flex; align-items:center; gap:16px; margin-bottom:48px; flex-wrap:wrap; }
+  .progress-bar-wrap { flex:1; min-width:200px; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+  .progress-bar-fill { height:100%; background:var(--gold); border-radius:2px; transition:width .4s ease; }
+  .progress-label { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); white-space:nowrap; }
+  .progress-label span { color:var(--gold); }
+
+  .section-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+
+  .timeline { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; margin-bottom:32px; }
+  .tl { padding:12px 10px; background:var(--surface); cursor:pointer; transition:background .18s; position:relative; overflow:hidden; }
+  .tl::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:var(--c); opacity:.8; }
+  .tl:hover, .tl.active { background:var(--surface2); }
+  .tl-week { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+  .tl-label { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; line-height:1.3; color:var(--c); }
+
+  .legend { display:flex; gap:20px; margin-bottom:32px; flex-wrap:wrap; }
+  .legend-item { display:flex; align-items:center; gap:7px; font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:.1em; }
+  .leg-dot { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+
+  .phases { position:relative; }
+  .phase { display:none; opacity:0; transform:translateY(12px); transition:opacity .3s,transform .3s; }
+  .phase.visible { display:block; opacity:1; transform:translateY(0); }
+
+  .phase-head { display:flex; align-items:center; gap:16px; margin-bottom:28px; flex-wrap:wrap; }
+  .phase-num { font-family:'Syne',sans-serif; font-size:72px; font-weight:800; color:var(--c); line-height:1; opacity:.18; flex-shrink:0; }
+  .phase-week { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--c); margin-bottom:4px; }
+  .phase-title { font-family:'Syne',sans-serif; font-size:clamp(20px,3.5vw,32px); font-weight:800; letter-spacing:-.02em; line-height:1; }
+
+  .task-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
+  @media(max-width:680px){ .task-grid{grid-template-columns:1fr 1fr;} .timeline{grid-template-columns:repeat(4,1fr);} }
+  @media(max-width:420px){ .task-grid{grid-template-columns:1fr;} .timeline{grid-template-columns:repeat(3,1fr);} }
+
+  .task { background:var(--surface); border:1px solid var(--border); padding:16px 18px; border-radius:2px; cursor:pointer; transition:border-color .18s,background .18s; display:flex; gap:10px; align-items:flex-start; min-height:76px; }
+  .task:hover { background:var(--surface2); border-color:var(--c); }
+  .task.done { opacity:.42; }
+  .task.done .task-text { text-decoration:line-through; }
+  .task.priority { border-left:3px solid var(--red-task); }
+  .check { width:16px; height:16px; border:1.5px solid var(--border); border-radius:3px; flex-shrink:0; margin-top:2px; display:flex; align-items:center; justify-content:center; font-size:10px; color:transparent; transition:all .15s; }
+  .task.done .check { background:var(--c); border-color:var(--c); color:#000; }
+  .task-text { font-size:13px; font-weight:400; line-height:1.5; color:var(--text); }
+  .priority-dot { display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--red-task); margin-right:4px; flex-shrink:0; margin-top:6px; }
+  .empty-task { background:var(--surface); border:1px solid var(--border); border-radius:2px; opacity:.12; min-height:76px; }
+
+  .milestone { background:linear-gradient(135deg,#0e2010 0%,#112915 100%); border:1px solid #2a5c2d; border-left:4px solid var(--milestone); padding:18px 24px; border-radius:2px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .milestone-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--milestone); flex-shrink:0; }
+  .milestone-text { font-family:'Syne',sans-serif; font-size:15px; font-weight:600; color:#c8f0ca; line-height:1.4; }
+
+  .phase-nav { display:flex; gap:10px; margin-top:28px; justify-content:flex-end; }
+  .nav-btn { background:var(--surface); border:1px solid var(--border); color:var(--text); font-family:'IBM Plex Mono',monospace; font-size:12px; padding:10px 20px; cursor:pointer; letter-spacing:.08em; transition:background .18s,border-color .18s; }
+  .nav-btn:hover { background:var(--surface2); border-color:var(--muted); }
+  .nav-btn:disabled { opacity:.3; cursor:not-allowed; }
+
+  footer { border-top:1px solid var(--border); padding-top:24px; margin-top:60px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+  footer p { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:.08em; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div>
+      <div class="brand">DAPLO AI · Roadmap Operacyjny</div>
+      <h1>Agencje Kreatywne<br><em>Plan Tygodniowy</em></h1>
+    </div>
+    <div class="header-meta">
+      <div>Źródło: Miro — Brainstorming</div>
+      <div>Week 1–10 · Creative Agencies</div>
+    </div>
+  </header>
+
+  <div class="progress-section">
+    <span class="progress-label">Ukończone: <span id="done-count">0</span> / <span id="total-count">0</span></span>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+    <span class="progress-label" id="progress-pct">0%</span>
+  </div>
+
+  <div class="section-label">Wybierz tydzień</div>
+  <div class="timeline" id="timeline">
+    <div class="tl active" style="--c:var(--w1)"   data-idx="0" onclick="showPhase(0)"><div class="tl-week">Week 1</div><div class="tl-label">Rebuild</div></div>
+    <div class="tl"        style="--c:var(--w2)"   data-idx="1" onclick="showPhase(1)"><div class="tl-week">Week 2</div><div class="tl-label">Pilot + Fundamenty</div></div>
+    <div class="tl"        style="--c:var(--w3)"   data-idx="2" onclick="showPhase(2)"><div class="tl-week">Week 3</div><div class="tl-label">Deep Dive + Content</div></div>
+    <div class="tl"        style="--c:var(--w4)"   data-idx="3" onclick="showPhase(3)"><div class="tl-week">Week 4</div><div class="tl-label">Pilot Close + Launch</div></div>
+    <div class="tl"        style="--c:var(--w56)"  data-idx="4" onclick="showPhase(4)"><div class="tl-week">Week 5–6</div><div class="tl-label">Content Engine</div></div>
+    <div class="tl"        style="--c:var(--w78)"  data-idx="5" onclick="showPhase(5)"><div class="tl-week">Week 7–8</div><div class="tl-label">Free AI Course</div></div>
+    <div class="tl"        style="--c:var(--w910)" data-idx="6" onclick="showPhase(6)"><div class="tl-week">Week 9–10</div><div class="tl-label">Close First Paid</div></div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="leg-dot" style="background:var(--surface);border:1px solid var(--border)"></div>Zadanie</div>
+    <div class="legend-item"><div class="leg-dot" style="background:var(--surface);border-left:3px solid var(--red-task);border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border)"></div>Priorytet / Kluczowe</div>
+    <div class="legend-item"><div class="leg-dot" style="background:#0e2010;border:1px solid #2a5c2d"></div>Milestone</div>
+  </div>
+
+  <div class="phases">
+
+    <!-- WEEK 1 -->
+    <div class="phase visible" data-phase="0" style="--c:var(--w1)">
+      <div class="phase-head">
+        <div class="phase-num">1</div>
+        <div class="phase-info"><div class="phase-week">Week 1</div><div class="phase-title">Rebuild</div></div>
+      </div>
+      <div class="task-grid">
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Roadmap</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Problemy naszego ICP i rozwiązania w Claude</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Ogarnąć Claude Cowork / Claude Code itp.</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Problemy naszej agencji do zautomatyzowania</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Ustawić Profile LinkedIn (własne i firmy)</span></div>
+        <div class="task priority" onclick="toggleTask(this)"><span class="priority-dot"></span><span class="check">✓</span><span class="task-text">Kontakt z pierwszym free klientem — pilot</span></div>
+        <div class="task priority" onclick="toggleTask(this)"><span class="priority-dot"></span><span class="check">✓</span><span class="task-text">Przegadać sprawę pilota: Yogrt czy inna agencja? Jeśli inna — napisać z darmową propozycją</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Stworzyć dokument z ofertami</span></div>
+        <div class="empty-task"></div>
+      </div>
+      <div class="milestone">
+        <span class="milestone-label">Milestone</span>
+        <span class="milestone-text">Cały rebuild ukończony, call z Franem Arielem, wiadomo co na pierwszy free pilot</span>
+      </div>
+    </div>
+
+    <!-- WEEK 2 -->
+    <div class="phase" data-phase="1" style="--c:var(--w2)">
+      <div class="phase-head">
+        <div class="phase-num">2</div>
+        <div class="phase-info"><div class="phase-week">Week 2</div><div class="phase-title">Pilot, Fundamenty, Startup</div></div>
+      </div>
+      <div class="task-grid">
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Kickoff pilot</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Zacząć mapować ich workflow</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Dokumentować wszystko</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Zacząć tworzyć listę leadów i automatyzację</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Zacząć wrzucać posty na LinkedIn i X</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Komentować posty, obserwować itd. na LinkedIn</span></div>
+        <div class="task priority" onclick="toggleTask(this)"><span class="priority-dot"></span><span class="check">✓</span><span class="task-text">Stworzyć pierwszy Lead Magnet, używać go do postów na X i pokazać na LinkedIn</span></div>
+        <div class="empty-task"></div>
+        <div class="empty-task"></div>
+      </div>
+      <div class="milestone">
+        <span class="milestone-label">Milestone</span>
+        <span class="milestone-text">Lead Magnet gotowy + baza leadów z początkową automatyzacją</span>
+      </div>
+    </div>
+
+    <!-- WEEK 3 -->
+    <div class="phase" data-phase="2" style="--c:var(--w3)">
+      <div class="phase-head">
+        <div class="phase-num">3</div>
+        <div class="phase-info"><div class="phase-week">Week 3</div><div class="phase-title">Deep Dive + More Content</div></div>
+      </div>
+      <div class="task-grid">
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Kontynuacja Pilota</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Raportujemy, identyfikujemy procesy, które można zautomatyzować</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Dokumentować wszystko, robić z nimi wywiady</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Więcej postów / komentarzy na LinkedIn + X</span></div>
+        <div class="task priority" onclick="toggleTask(this)"><span class="priority-dot"></span><span class="check">✓</span><span class="task-text">Zacząć Email Outreach</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Więcej skilli i automatyzacji w naszej agencji</span></div>
+        <div class="empty-task"></div>
+        <div class="empty-task"></div>
+        <div class="empty-task"></div>
+      </div>
+      <div class="milestone">
+        <span class="milestone-label">Milestone</span>
+        <span class="milestone-text">Raport pilota gotowy + 5 maili wysłanych</span>
+      </div>
+    </div>
+
+    <!-- WEEK 4 -->
+    <div class="phase" data-phase="3" style="--c:var(--w4)">
+      <div class="phase-head">
+        <div class="phase-num">4</div>
+        <div class="phase-info"><div class="phase-week">Week 4</div><div class="phase-title">Pilot Close + Launch</div></div>
+      </div>
+      <div class="task-grid">
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Prezentujemy Audit Pilot</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Dokumentujemy, tworzymy za zgodą Case Study z liczbami i ich firmą, testimonials</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Dodać Case Study i testimonial na Landing Page + lead magnet download</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Regularny kontent na LinkedIn + X</span></div>
+        <div class="task priority" onclick="toggleTask(this)"><span class="priority-dot"></span><span class="check">✓</span><span class="task-text">Wysyłać ten Outreach !!!</span></div>
+        <div class="task priority" onclick="toggleTask(this)"><span class="priority-dot"></span><span class="check">✓</span><span class="task-text">Zaproponujemy przekształcenie tego na skille i automatyzacje za -80% ceny</span></div>
+        <div class="empty-task"></div>
+        <div class="empty-task"></div>
+        <div class="empty-task"></div>
+      </div>
+      <div class="milestone">
+        <span class="milestone-label">Milestone</span>
+        <span class="milestone-text">Case Study gotowe + testimonial + wszystko gotowe do Launch</span>
+      </div>
+    </div>
+
+    <!-- WEEK 5–6 -->
+    <div class="phase" data-phase="4" style="--c:var(--w56)">
+      <div class="phase-head">
+        <div class="phase-num">5–6</div>
+        <div class="phase-info"><div class="phase-week">Week 5–6</div><div class="phase-title">Content Engine Start</div></div>
+      </div>
+      <div class="task-grid">
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Ustalić regularną publikację na LinkedIn + X</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Każdy post kończy się linkiem do Lead Magnet</span></div>
+        <div class="task priority" onclick="toggleTask(this)"><span class="priority-dot"></span><span class="check">✓</span><span class="task-text">Masowy zautomatyzowany Cold Outreach</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Dołączyć do community (opcjonalnie)</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Więcej automatyzacji u nas w agencji</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Rozpocząć tworzenie Free Kursu AI</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Stworzyć nowy Lead Magnet</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Zbierać więcej leadów i robić Outreach</span></div>
+        <div class="task priority" onclick="toggleTask(this)"><span class="priority-dot"></span><span class="check">✓</span><span class="task-text">Tworzenie automatyzacji i skilli dla klienta</span></div>
+      </div>
+      <div class="milestone">
+        <span class="milestone-label">Milestone</span>
+        <span class="milestone-text">Pierwsze discovery calls + Lead Magnet + więcej Outreachu</span>
+      </div>
+    </div>
+
+    <!-- WEEK 7–8 -->
+    <div class="phase" data-phase="5" style="--c:var(--w78)">
+      <div class="phase-head">
+        <div class="phase-num">7–8</div>
+        <div class="phase-info"><div class="phase-week">Week 7–8</div><div class="phase-title">Free AI Course + Pipeline Building</div></div>
+      </div>
+      <div class="task-grid">
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Opublikować Free AI Course dla naszych targetów</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Promowanie kursu w postaci postów na LinkedIn</span></div>
+        <div class="task priority" onclick="toggleTask(this)"><span class="priority-dot"></span><span class="check">✓</span><span class="task-text">Proponujemy Paid Audit dla uczestników kursu pasujących do ICP — i dla każdego komu się da</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Kontynuować Outreach i posty na LinkedIn + X</span></div>
+        <div class="task priority" onclick="toggleTask(this)"><span class="priority-dot"></span><span class="check">✓</span><span class="task-text">Kończyć automatyzację, zrobić z tego prezentację, spytać o Case Study + testimonial, zaproponować retainer</span></div>
+        <div class="empty-task"></div>
+        <div class="empty-task"></div>
+        <div class="empty-task"></div>
+        <div class="empty-task"></div>
+      </div>
+      <div class="milestone">
+        <span class="milestone-label">Milestone</span>
+        <span class="milestone-text">Opublikować Free AI Course + promować kurs + wysłane propozycje Paid Audit</span>
+      </div>
+    </div>
+
+    <!-- WEEK 9–10 -->
+    <div class="phase" data-phase="6" style="--c:var(--w910)">
+      <div class="phase-head">
+        <div class="phase-num">9–10</div>
+        <div class="phase-info"><div class="phase-week">Week 9–10</div><div class="phase-title">Close First Paid Audit</div></div>
+      </div>
+      <div class="task-grid">
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Follow-upy (najlepiej automatyzacja)</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Publikacja Case Study w formie dłuższego postu na LinkedIn</span></div>
+        <div class="task priority" onclick="toggleTask(this)"><span class="priority-dot"></span><span class="check">✓</span><span class="task-text">Pierwszy call i zamknięcie Paid Clienta</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Stworzyć Next AI Course, ale z case study w nim</span></div>
+        <div class="task" onclick="toggleTask(this)"><span class="check">✓</span><span class="task-text">Kontynuuj Rhythm</span></div>
+        <div class="empty-task"></div>
+        <div class="empty-task"></div>
+        <div class="empty-task"></div>
+        <div class="empty-task"></div>
+      </div>
+      <div class="milestone">
+        <span class="milestone-label">Milestone</span>
+        <span class="milestone-text">Pierwszy płatny klient + stworzony drugi kurs</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="phase-nav">
+    <button class="nav-btn" id="btn-prev" onclick="navigate(-1)" disabled>← Poprzedni</button>
+    <button class="nav-btn" id="btn-next" onclick="navigate(1)">Następny →</button>
+  </div>
+
+  <footer>
+    <p>DAPLO AI · Zaimportowano z Miro "Brainstorming"</p>
+    <p id="footer-progress">Week 1 z 7</p>
+  </footer>
+
+</div>
+
+<script>
+  let current = 0;
+  const total = 7;
+  const weekLabels = ['1','2','3','4','5–6','7–8','9–10'];
+
+  function showPhase(idx) {
+    document.querySelectorAll('.phase').forEach(p => {
+      p.classList.remove('visible');
+      setTimeout(() => { if (!p.classList.contains('visible')) p.style.display='none'; }, 300);
+    });
+    document.querySelectorAll('.tl').forEach(t => t.classList.remove('active'));
+
+    const phase = document.querySelector(`.phase[data-phase="${idx}"]`);
+    phase.style.display = 'block';
+    requestAnimationFrame(() => requestAnimationFrame(() => phase.classList.add('visible')));
+    document.querySelector(`.tl[data-idx="${idx}"]`).classList.add('active');
+
+    current = idx;
+    document.getElementById('btn-prev').disabled = idx === 0;
+    document.getElementById('btn-next').disabled = idx === total - 1;
+    document.getElementById('footer-progress').textContent = `Week ${weekLabels[idx]} z ${total}`;
+  }
+
+  function navigate(dir) {
+    const next = current + dir;
+    if (next >= 0 && next < total) showPhase(next);
+  }
+
+  function toggleTask(el) {
+    el.classList.toggle('done');
+    el.querySelector('.check').textContent = el.classList.contains('done') ? '✓' : '';
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const all = document.querySelectorAll('.task');
+    const done = document.querySelectorAll('.task.done');
+    const pct = all.length ? Math.round(done.length / all.length * 100) : 0;
+    document.getElementById('done-count').textContent = done.length;
+    document.getElementById('total-count').textContent = all.length;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-pct').textContent = pct + '%';
+  }
+
+  updateProgress();
+</script>
+</body>
+</html>
